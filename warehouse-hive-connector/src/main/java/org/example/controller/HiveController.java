@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,10 +41,13 @@ public class HiveController {
         Connection connection = dataSource.getConnection();
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(request.getSql());
+        ResultSetMetaData metaData = resultSet.getMetaData();
         while (resultSet.next()) {
             HashMap<String, String> innerCache = new HashMap<>();
-            innerCache.put("id", resultSet.getString("id"));
-            innerCache.put("name", resultSet.getString("name"));
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                String column = metaData.getColumnName(i);
+                innerCache.put(column, resultSet.getString(column));
+            }
             cache.add(innerCache);
         }
         statement.close();
