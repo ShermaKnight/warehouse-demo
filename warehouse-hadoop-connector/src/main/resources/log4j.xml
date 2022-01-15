@@ -3,10 +3,10 @@
 
 <log4j:configuration>
     <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
-        <param name="Threshold" value="INFO" />
+        <param name="Threshold" value="INFO"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern"
-                   value="%d{yyyy-MM-dd HH:mm:ss a} [Thread: %t][ Class:%c  Method: %l ]%n%p:%m%n"/>
+                   value="%d{yyyy-MM-dd HH:MM:ss} %p [Thread: %t][Class: %c Method: %l] %m%n"/>
         </layout>
     </appender>
 
