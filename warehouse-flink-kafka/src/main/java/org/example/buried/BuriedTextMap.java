@@ -15,22 +15,26 @@ public class BuriedTextMap implements FlatMapFunction<String, JSONObject> {
 
     @Override
     public void flatMap(String value, Collector<JSONObject> out) throws Exception {
-        JSONObject parseObject = JSONObject.parseObject(value);
-        if (!Optional.ofNullable(parseObject.get("division_id")).isPresent() || !Optional.ofNullable(parseObject.get("project_id")).isPresent()) {
-            return;
-        }
-        JSONObject commonObject = new JSONObject();
-        copy(parseObject, commonObject);
-        List<JSONObject> list = list(parseObject.get("data"));
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (JSONObject object : list) {
-                JSONObject mergeObject = new JSONObject();
-                copy(commonObject, mergeObject);
-                copy(object, mergeObject);
-                out.collect(mergeObject);
+        try {
+            JSONObject parseObject = JSONObject.parseObject(value);
+            if (!Optional.ofNullable(parseObject.get("division_id")).isPresent() || !Optional.ofNullable(parseObject.get("project_id")).isPresent()) {
+                return;
             }
-        } else {
-            out.collect(commonObject);
+            JSONObject commonObject = new JSONObject();
+            commonObject.put("process_time", System.currentTimeMillis());
+            copy(parseObject, commonObject);
+            List<JSONObject> list = list(parseObject.get("data"));
+            if (CollectionUtils.isNotEmpty(list)) {
+                for (JSONObject object : list) {
+                    JSONObject mergeObject = new JSONObject();
+                    copy(commonObject, mergeObject);
+                    copy(object, mergeObject);
+                    out.collect(mergeObject);
+                }
+            } else {
+                out.collect(commonObject);
+            }
+        } catch (Exception e) {
         }
     }
 
