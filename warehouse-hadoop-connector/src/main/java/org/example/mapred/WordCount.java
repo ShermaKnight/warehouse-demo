@@ -13,8 +13,14 @@ import org.apache.hadoop.util.GenericOptionsParser;
 @SuppressWarnings("all")
 public class WordCount {
 
+    /**
+     * hadoop jar warehouse-hadoop-connector-1.0-SNAPSHOT.jar org.example.mapred.WordCount /hadoop/input/1.txt /hadoop/output/
+     *
+     * @param args
+     */
     @SneakyThrows
     public static void main(String[] args) {
+        System.setProperty("HADOOP_USER_NAME", "root");
         Configuration configuration = new Configuration();
         String[] otherArgs = new GenericOptionsParser(configuration, args).getRemainingArgs();
         if (otherArgs.length < 2) {
