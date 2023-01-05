@@ -1,4 +1,4 @@
-package org.example.buried;
+package org.example.event;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -8,10 +8,9 @@ import org.apache.flink.util.Collector;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Optional;
 
-public class BuriedTextMap implements FlatMapFunction<String, JSONObject> {
+public class EventTextMap implements FlatMapFunction<String, JSONObject> {
 
     @Override
     public void flatMap(String value, Collector<JSONObject> out) throws Exception {

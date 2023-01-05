@@ -1,4 +1,4 @@
-package org.example.buried;
+package org.example.event;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -6,7 +6,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class BuriedDataSource {
+public class EventDataSource {
 
     private static HikariConfig hikariConfig = new HikariConfig();
     private static HikariDataSource dataSource;
@@ -21,7 +21,7 @@ public class BuriedDataSource {
         dataSource = new HikariDataSource(hikariConfig);
     }
 
-    private BuriedDataSource() {
+    private EventDataSource() {
     }
 
     public static Connection getConnection() throws SQLException {

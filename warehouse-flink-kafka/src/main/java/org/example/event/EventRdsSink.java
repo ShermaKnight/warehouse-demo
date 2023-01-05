@@ -1,4 +1,4 @@
-package org.example.buried;
+package org.example.event;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -12,14 +12,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class BuriedRdsSink extends RichSinkFunction<JSONObject> {
+public class EventRdsSink extends RichSinkFunction<JSONObject> {
 
     private Connection connection;
 
     @Override
     public void open(Configuration parameters) throws Exception {
         super.open(parameters);
-        this.connection = BuriedDataSource.getConnection();
+        this.connection = EventDataSource.getConnection();
     }
 
     @Override

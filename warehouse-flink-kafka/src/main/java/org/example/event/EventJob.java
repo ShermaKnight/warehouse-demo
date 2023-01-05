@@ -1,9 +1,8 @@
-package org.example.buried;
+package org.example.event;
 
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringEncoder;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
@@ -27,22 +26,22 @@ import java.util.Date;
 import java.util.Properties;
 
 @SuppressWarnings("all")
-public class BuriedJob {
+public class EventJob {
 
     @SneakyThrows
     public static void main(String[] args) {
         System.setProperty("HADOOP_USER_NAME", "root");
 
         StreamExecutionEnvironment environment = StreamExecutionEnvironment.getExecutionEnvironment();
-        environment.setStateBackend(new FsStateBackend("hdfs://192.168.71.128:8020/flink/checkpoints/buried"));
+        environment.setStateBackend(new FsStateBackend("hdfs://192.168.71.128:8020/flink/checkpoints/event"));
         CheckpointConfig config = environment.getCheckpointConfig();
         config.enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
         config.setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
         config.setCheckpointInterval(60000);
 
         DataStreamSource<String> textSource = environment.addSource(kafkaSource(false));
-        KeyedStream<JSONObject, String> keyedStream = textSource.flatMap(new BuriedTextMap()).keyBy(new BuriedTextSelector());
-        keyedStream.addSink(new BuriedRdsSink()).name("rds-sink");
+        KeyedStream<JSONObject, String> keyedStream = textSource.flatMap(new EventTextMap()).keyBy(new EventTextSelector());
+        keyedStream.addSink(new EventRdsSink()).name("rds-sink");
         SingleOutputStreamOperator<String> streamOperator = keyedStream.map(new MapFunction<JSONObject, String>() {
             @Override
             public String map(JSONObject value) throws Exception {
@@ -87,7 +86,7 @@ public class BuriedJob {
                 .build();
 
         return StreamingFileSink
-                .forRowFormat(new Path("hdfs://192.168.71.128:8020/flink/buried"), new SimpleStringEncoder<String>("UTF-8"))
+                .forRowFormat(new Path("hdfs://192.168.71.128:8020/flink/event"), new SimpleStringEncoder<String>("UTF-8"))
                 .withBucketAssigner(new BucketAssigner<String, String>() {
                     @Override
                     public String getBucketId(String s, Context context) {

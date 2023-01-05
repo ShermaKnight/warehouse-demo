@@ -1,5 +1,6 @@
 package org.example.batch;
 
+import cn.hutool.core.util.ReUtil;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FlatMapFunction;
@@ -17,10 +18,10 @@ public class WordCount {
 
     @SneakyThrows
     public static void main(String[] args) {
-        String input = "D:/Document/1.txt";
+        String input = "/Users/chenkaikai/Downloads/ip.txt";
         ExecutionEnvironment environment = ExecutionEnvironment.getExecutionEnvironment();
         DataSource<String> dataSource = environment.readTextFile(input);
-        dataSource.flatMap(new FlatMapFunction<String, Tuple2<String, Integer>>() {
+        dataSource.filter(text -> !ReUtil.isMatch("\\w+", text)).flatMap(new FlatMapFunction<String, Tuple2<String, Integer>>() {
             @Override
             public void flatMap(String s, Collector<Tuple2<String, Integer>> collector) throws Exception {
                 for (String f : split(s)) {
@@ -31,7 +32,7 @@ public class WordCount {
     }
 
     private static List<String> split(String text) {
-        List<String> separator = Stream.of(",", ";", ".", "!").collect(Collectors.toList());
+        List<String> separator = Stream.of(",", ";", ".", "!", ":", "=", ">", "<", "%").collect(Collectors.toList());
         if (StringUtils.isNotEmpty(text) && StringUtils.isNotEmpty(text.trim())) {
             text = text.trim().toLowerCase(Locale.ROOT);
             for (String separate : separator) {
