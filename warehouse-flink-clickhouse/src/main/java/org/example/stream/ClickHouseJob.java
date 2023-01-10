@@ -20,18 +20,18 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 
 import java.util.Optional;
 
-public class LogJob {
+public class ClickHouseJob {
 
     @SneakyThrows
     public static void main(String[] args) {
         StreamExecutionEnvironment environment = StreamExecutionEnvironment.getExecutionEnvironment();
         DataStreamSource<String> kafkaSource = environment.fromSource(kafkaConsumer(), WatermarkStrategy.noWatermarks(), "Kafka Source");
-        SingleOutputStreamOperator<String> streamOperator = kafkaSource.map((MapFunction<String, LogBean>) s -> {
+        SingleOutputStreamOperator<String> streamOperator = kafkaSource.map((MapFunction<String, ClickHouseBean>) s -> {
             if (StringUtils.isNoneEmpty(s)) {
-                return JSONObject.parseObject(s, LogBean.class);
+                return JSONObject.parseObject(s, ClickHouseBean.class);
             }
             return null;
-        }).filter((FilterFunction<LogBean>) logBean -> Optional.ofNullable(logBean).isPresent()).map((MapFunction<LogBean, String>) logBean -> JSONObject.toJSONString(logBean));
+        }).filter((FilterFunction<ClickHouseBean>) clickHouseBean -> Optional.ofNullable(clickHouseBean).isPresent()).map((MapFunction<ClickHouseBean, String>) clickHouseBean -> JSONObject.toJSONString(clickHouseBean));
         streamOperator.sinkTo(kafkaProducer());
         environment.execute();
     }
@@ -42,7 +42,7 @@ public class LogJob {
                 .setTopics("flink")
                 .setGroupId("flink-client")
                 .setDeserializer(KafkaRecordDeserializationSchema.valueOnly(StringDeserializer.class))
-                .setUnbounded(OffsetsInitializer.latest())
+                .setStartingOffsets(OffsetsInitializer.latest())
                 .build();
     }
 

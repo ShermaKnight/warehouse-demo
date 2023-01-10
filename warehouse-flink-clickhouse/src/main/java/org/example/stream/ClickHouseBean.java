@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class LogBean {
+public class ClickHouseBean {
 
     private CommonBean common;
     private PageBean page;

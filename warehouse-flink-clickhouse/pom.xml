@@ -138,7 +138,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>org.example.stream.LogJob</mainClass>
+                            <mainClass>org.example.stream.ClickHouseJob</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
