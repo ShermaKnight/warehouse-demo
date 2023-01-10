@@ -14,7 +14,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <flink.version>1.16.0</flink.version>
         <java.version>1.8</java.version>
-        <scala.binary.version>2.12</scala.binary.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <log4j.version>2.12.1</log4j.version>
@@ -66,19 +65,23 @@
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-filesystem_${scala.binary.version}</artifactId>
-            <version>1.11.6</version>
+            <artifactId>flink-connector-base</artifactId>
+            <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-jdbc</artifactId>
-            <version>1.16.0</version>
-            <scope>provided</scope>
+            <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-core</artifactId>
-            <version>1.16.0</version>
+            <artifactId>flink-json</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-api-scala-bridge_2.12</artifactId>
+            <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -17,19 +17,26 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
 public class LogJob {
+
+    private final  static Logger logger = LoggerFactory.getLogger(LogJob.class);
 
     @SneakyThrows
     public static void main(String[] args) {
         StreamExecutionEnvironment environment = StreamExecutionEnvironment.getExecutionEnvironment();
         DataStreamSource<String> kafkaSource = environment.fromSource(kafkaConsumer(), WatermarkStrategy.noWatermarks(), "Kafka Source");
         SingleOutputStreamOperator<String> streamOperator = kafkaSource.map((MapFunction<String, LogBean>) s -> {
-            if (StringUtils.isNoneEmpty(s)) {
-                return JSONObject.parseObject(s, LogBean.class);
-            }
+            try {
+                if (StringUtils.isNoneEmpty(s)) {
+                    logger.info(s);
+                    return JSONObject.parseObject(s, LogBean.class);
+                }
+            } catch (Exception e) {}
             return null;
         }).filter((FilterFunction<LogBean>) logBean -> Optional.ofNullable(logBean).isPresent()).map((MapFunction<LogBean, String>) logBean -> JSONObject.toJSONString(logBean));
         streamOperator.sinkTo(kafkaProducer());
@@ -42,7 +49,7 @@ public class LogJob {
                 .setTopics("flink")
                 .setGroupId("flink-client")
                 .setDeserializer(KafkaRecordDeserializationSchema.valueOnly(StringDeserializer.class))
-                .setUnbounded(OffsetsInitializer.latest())
+                .setStartingOffsets(OffsetsInitializer.latest())
                 .build();
     }
 
