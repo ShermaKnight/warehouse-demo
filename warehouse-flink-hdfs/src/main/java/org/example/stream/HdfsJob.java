@@ -22,26 +22,25 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-public class LogJob {
+public class HdfsJob {
 
-    private final  static Logger logger = LoggerFactory.getLogger(LogJob.class);
+    private final  static Logger logger = LoggerFactory.getLogger(HdfsJob.class);
 
     @SneakyThrows
     public static void main(String[] args) {
         StreamExecutionEnvironment environment = StreamExecutionEnvironment.getExecutionEnvironment();
         DataStreamSource<String> kafkaSource = environment.fromSource(kafkaConsumer(), WatermarkStrategy.noWatermarks(), "Kafka Source");
-        SingleOutputStreamOperator<LogBean> streamOperator = kafkaSource.map((MapFunction<String, LogBean>) s -> {
+        SingleOutputStreamOperator<HdfsBean> streamOperator = kafkaSource.map((MapFunction<String, HdfsBean>) s -> {
             try {
                 if (StringUtils.isNoneEmpty(s)) {
                     logger.info(s);
-                    return JSONObject.parseObject(s, LogBean.class);
+                    return JSONObject.parseObject(s, HdfsBean.class);
                 }
             } catch (Exception e) {
             }
             return null;
-        }).filter((FilterFunction<LogBean>) logBean -> Optional.ofNullable(logBean).isPresent());
-        streamOperator.addSink(new LogSinkFunction());
-        streamOperator.map((MapFunction<LogBean, String>) logBean -> JSONObject.toJSONString(logBean)).sinkTo(kafkaProducer());
+        }).filter((FilterFunction<HdfsBean>) hdfsBean -> Optional.ofNullable(hdfsBean).isPresent());
+        streamOperator.map((MapFunction<HdfsBean, String>) hdfsBean -> JSONObject.toJSONString(hdfsBean)).sinkTo(kafkaProducer());
         environment.execute();
     }
 
