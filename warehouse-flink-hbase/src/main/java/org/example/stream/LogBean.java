@@ -8,7 +8,31 @@ import java.util.List;
 public class LogBean {
 
     /**
-     * {"common":{"ar":"110000","ba":"iPhone","ch":"Appstore","is_new":"1","md":"iPhone 13","mid":"mid_368770","os":"iOS 13.3.1","uid":"63","vc":"v2.1.132"},"displays":[{"display_type":"activity","item":"1","item_type":"activity_id","order":1,"pos_id":3}],"page":{"during_time":19393,"page_id":"home"},"ts":1605368266000}
+     * {
+     * 	"common": {
+     * 		"ar": "110000",
+     * 		"ba": "iPhone",
+     * 		"ch": "Appstore",
+     * 		"is_new": "1",
+     * 		"md": "iPhone 13",
+     * 		"mid": "mid_368770",
+     * 		"os": "iOS 13.3.1",
+     * 		"uid": "63",
+     * 		"vc": "v2.1.132"
+     *        },
+     * 	"displays": [{
+     * 		"display_type": "activity",
+     * 		"item": "1",
+     * 		"item_type": "activity_id",
+     * 		"order": 1,
+     * 		"pos_id": 3
+     *    }],
+     * 	"page": {
+     * 		"during_time": 19393,
+     * 		"page_id": "home"
+     *    },
+     * 	"ts": 1605368266000
+     * }
      */
 
     private CommonBean common;
